@@ -1,0 +1,15 @@
+#!/bin/sih
+# save_config - A shell script to save environnement variables file
+
+save_config () {
+
+  for var in $(cat $GENERATOR_CONFIG_FILE | cut -d= -f1) 
+  do 
+    set | grep $var | sed -e '/var/d' >> "$CONFIG.tmp"
+  done
+
+  sort -u "$CONFIG.tmp" > $GENERATOR_CONFIG_FILE
+  rm "$CONFIG.tmp"
+}
+
+save_config

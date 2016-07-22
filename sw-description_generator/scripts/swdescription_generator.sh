@@ -3,17 +3,8 @@
 
 export GENERATOR_CONFIG_FILE="config/generator.config"
 export GENERATOR_SCRIPTS_PATH="scripts/"
-
-# Init variables with config file
-init_variables () {
-
-  DESTINATION_DIR=$(grep "Destination directory" $GENERATOR_CONFIG_FILE | cut -d= -f2) 
-  SOURCE_DIR=$(grep "Source directory" $GENERATOR_CONFIG_FILE | cut -d= -f2) 
-  PRIVATE_KEY_PATH=$(grep "Private key" $GENERATOR_CONFIG_FILE | cut -d= -f2) 
-  PUBLIC_KEY_PATH=$(grep "Public key" $GENERATOR_CONFIG_FILE | cut -d= -f2) 
-  
-  echo $DESTINATION_DIR $SOURCE_DIR $PRIVATE_KEY_PATH $PUBLIC_KEY_PATH
-  }
+export GENERATOR_TEMPLATE_DIR="template"
+source $GENERATOR_CONFIG_FILE
 
 main_window () {
 
@@ -36,13 +27,13 @@ main_window () {
   0) #Chose an option 
     case $CHOICE in
           1)
-            ./$GENERATOR_SCRIPTS_PATH/create_swdescription.sh  
+            source $GENERATOR_SCRIPTS_PATH/create_swdescription.sh  
               ;;
           2)
-            ./$GENERATOR_SCRIPTS_PATH/configuration.sh $1 $2 $3 $4             
+            source $GENERATOR_SCRIPTS_PATH/configuration.sh            
             ;;
           3)
-            ./$GENERATOR_SCRIPTS_PATH/create_archive.sh 
+            source $GENERATOR_SCRIPTS_PATH/create_archive.sh 
             ;;
      esac
      ;;
@@ -54,13 +45,12 @@ main_window () {
 
 exec 3>&1
 
-read DESTINATION_DIR SOURCE_DIR PRIVATE_KEY_PATH PUBLIC_KEY_PATH <<< $(init_variables)
-main_window $DESTINATION_DIR $SOURCE_DIR $PRIVATE_KEY_PATH $PUBLIC_KEY_PATH $GENERATOR_CONFIG_FILE
+main_window 
 
 exec 3>&-
 
 unset "GENERATOR_SCRIPTS_PATH"
 unset "GENERATOR_CONFIG_FILE"
-
+unset "GENERATOR_TEMPLATE_DIR"
 
 

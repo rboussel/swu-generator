@@ -1,0 +1,33 @@
+software =
+{
+    version = "@version";
+    hardware-compatibility = [ "@compatibility" ]; 
+    
+    application = {
+        main: {
+  
+            images: (
+            {
+                filename = "@filename";
+                device = "@main_device";
+                sha256 = @@filename
+            }
+            );
+
+
+        }
+
+        alt: {
+            
+             images: (
+            {
+                filename = "@filename";
+                device = "@alt_device";
+                sha256 = @@filename
+            }
+            );
+    
+           }
+    };
+}
+

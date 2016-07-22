@@ -18,7 +18,7 @@ images_config () {
          --backtitle "Création de sw-description" \
          --title "Configuration des images" \
          --menu "" \
-         20 70 100 \
+         20 150 100 \
          "${OPTIONS[@]}" \
          2>&1 >/dev/tty)
  
@@ -29,6 +29,7 @@ images_config () {
   ROOTFS_NAME=$3 
   ROOTFS_VERSION=$4 
   ADDED_FILES=$5
+
    case $retval in 
     0)
         case $CHOICE in 
@@ -40,9 +41,9 @@ images_config () {
            2>&1 1>&3 | sed "s/ /-/g" )   
            if [ $APP_NAME  ]
            then
-              images_config $APP_NAME $APP_VERSION $ROOTFS_NAME $ROOTFS_VERSION $ADDED_FILES $6 $7 $8 
+              images_config $APP_NAME $APP_VERSION $ROOTFS_NAME $ROOTFS_VERSION $ADDED_FILES  $6 $7 
            else 
-              images_config $1 $APP_VERSION $ROOTFS_NAME $ROOTFS_VERSION $ADDED_FILES $6 $7 $8 
+              images_config $1 $APP_VERSION $ROOTFS_NAME $ROOTFS_VERSION $ADDED_FILES  $6 $7 
            fi
             ;;
 
@@ -53,9 +54,9 @@ images_config () {
            2>&1 1>&3 | sed "s/ /./g")
            if [ $APP_VERSION ]
            then 
-             images_config $APP_NAME $APP_VERSION $ROOTFS_NAME $ROOTFS_VERSION $ADDED_FILES $6 $7 $8 
+             images_config $APP_NAME $APP_VERSION $ROOTFS_NAME $ROOTFS_VERSION $ADDED_FILES  $6 $7 
             else
-             images_config $APP_NAME $2 $ROOTFS_NAME $ROOTFS_VERSION $ADDED_FILES $6 $7 $8 
+             images_config $APP_NAME $2 $ROOTFS_NAME $ROOTFS_VERSION $ADDED_FILES  $6 $7 
              fi
           ;;
 
@@ -66,9 +67,9 @@ images_config () {
            2>&1 1>&3 | sed "s/ /-/g")
            if [ $ROOTFS_NAME ]
            then 
-             images_config $APP_NAME $APP_VERSION $ROOTFS_NAME $ROOTFS_VERSION $ADDED_FILES $6 $7 $8 
+             images_config $APP_NAME $APP_VERSION $ROOTFS_NAME $ROOTFS_VERSION $ADDED_FILES  $6 $7 
            else
-             images_config $APP_NAME $APP_VERSION $3 $ROOTFS_VERSION $ADDED_FILES $6 $7 $8 
+             images_config $APP_NAME $APP_VERSION $3 $ROOTFS_VERSION $ADDED_FILES  $6 $7 
              fi
             ;;
 
@@ -79,9 +80,9 @@ images_config () {
            2>&1 1>&3 | sed "s/ /./g")
            if [ $ROOTFS_VERSION ]
            then 
-             images_config $APP_NAME $APP_VERSION $ROOTFS_NAME $ROOTFS_VERSION $ADDED_FILES $6 $7 $8 
+             images_config $APP_NAME $APP_VERSION $ROOTFS_NAME $ROOTFS_VERSION $ADDED_FILES  $6 $7 
            else
-             images_config $APP_NAME $APP_VERSION $ROOTFS_NAME $4 $ADDED_FILES $6 $7 $8 
+             images_config $APP_NAME $APP_VERSION $ROOTFS_NAME $4 $ADDED_FILES  $6 $7 
              fi
            ;;
 
@@ -92,14 +93,14 @@ images_config () {
            2>&1 1>&3 | sed "s/ /,/g")
            if [ $ADDED_FILES ]
            then 
-             images_config $APP_NAME $APP_VERSION $ROOTFS_NAME $ROOTFS_VERSION $ADDED_FILES $6 $7 $8 
+             images_config $APP_NAME $APP_VERSION $ROOTFS_NAME $ROOTFS_VERSION $ADDED_FILES  $6 $7 
            else
-             images_config $APP_NAME $APP_VERSION $ROOTFS_NAME $ROOTFS_VERSION $5 $6 $7 $8 
+             images_config $APP_NAME $APP_VERSION $ROOTFS_NAME $ROOTFS_VERSION $5  $6 $7 
            fi
            ;;
 
         6) #Next page
-          archive_config $APP_NAME $APP_VERSION $ROOTFS_NAME $ROOTFS_VERSION $ADDED_FILES $6 $7 $8 
+          archive_config $APP_NAME $APP_VERSION $ROOTFS_NAME $ROOTFS_VERSION $ADDED_FILES  $6 $7 
           ;;
         esac
        ;;
@@ -107,8 +108,8 @@ images_config () {
        ./"$GENERATOR_SCRIPTS_PATH/swdescription_generator.sh"
        ;;
     3)
-        write_config $APP_NAME $APP_VERSION $ROOTFS_NAME $ROOTFS_VERSION $ADDED_FILES $6 $7 $8 
-        images_config $APP_NAME $APP_VERSION $ROOTFS_NAME $ROOTFS_VERSION $ADDED_FILES $6 $7 $8 
+        source "$GENERATOR_SCRIPTS_PATH/save_config" 
+        images_config $APP_NAME $APP_VERSION $ROOTFS_NAME $ROOTFS_VERSION $ADDED_FILES  $6 $7 
        ;; 
     255) 
        ./"$GENERATOR_SCRIPTS_PATH/swdescription_generator.sh"
@@ -120,9 +121,8 @@ images_config () {
 # Get information about archive
 archive_config () {
   
-  OPTIONS=(1 "Version de l'Archive ($6) --->" 
-           2 "Reboot prioritaire ($7) --->" 
-           3 "Paramètre à ajouter au nom ($8) --->")
+  OPTIONS=(1 "Reboot prioritaire ($6) --->" 
+           2 "Paramètre à ajouter au nom ($7) --->")
 
   CHOICE=$(dialog --clear \
          --extra-button \
@@ -131,35 +131,20 @@ archive_config () {
          --backtitle "Création de sw-description" \
          --title "Configuration de l'archive " \
          --menu "" \
-         20 70 100 \
+         20 110 100 \
          "${OPTIONS[@]}" \
          2>&1 >/dev/tty)
  
   retval=$?
 
-  ARCHIVE_VERSION=$6
-  REBOOT_STATE=$7
-  OTHER_PARAM=$8
+  REBOOT_STATE=$6
+  OTHER_PARAM=$7
 
   case $retval in 
     0)  
       case $CHOICE in 
 
-      1)# Archive version
-        ARCHIVE_VERSION=$(dialog --title "Version de l'archive" \
-           --backtitle "Configuration de l'archive" \
-           --inputbox "Entrez la version de l'archive" 8 60 $6 \
-           2>&1 1>&3 | sed "s/ /./g")
-        if [ $ARCHIVE_VERSION ]
-           then 
-             archive_config $1 $2 $3 $4 $5 $ARCHIVE_VERSION $REBOOT_STATE $OTHER_PARAM 
-
-           else
-             archive_config $1 $2 $3 $4 $5 $6 $REBOOT_STATE $OTHER_PARAM 
-            fi
-        ;;
-
-      2) # Reboot priority
+      1) # Reboot priority
           value=$(dialog --title "Reboot prioritaire" \
            --backtitle "Configuration de l'archive" \
            --yesno "Le système doit il redémarrer après la mise à jour ?" 8 60  \
@@ -170,71 +155,34 @@ archive_config () {
            else 
              REBOOT_STATE="NORMAL"
            fi
-           archive_config $1 $2 $3 $4 $5 $ARCHIVE_VERSION $REBOOT_STATE $OTHER_PARAM 
+           archive_config $1 $2 $3 $4 $5  $REBOOT_STATE $OTHER_PARAM 
         ;;
 
-      3)# Other parameter
+      2)# Other parameter
         OTHER_PARAM=$(dialog --title "Paramètre à ajouter au nom" \
            --backtitle "Configuration de l'archive" \
-           --inputbox "Entrez la liste des paramètres à ajouter au nom de l'archive" 8 60 $8 \
+           --inputbox "Entrez la liste des paramètres à ajouter au nom de l'archive" 8 60 $7 \
            2>&1 1>&3 | sed "s/ /,/g")
         if [ $OTHER_PARAM ]
            then 
-             archive_config $1 $2 $3 $4 $5 $ARCHIVE_VERSION $REBOOT_STATE $OTHER_PARAM
+             archive_config $1 $2 $3 $4 $5  $REBOOT_STATE $OTHER_PARAM
            else
-             archive_config $1 $2 $3 $4 $5 $ARCHIVE_VERSION $REBOOT_STATE $8
+             archive_config $1 $2 $3 $4 $5  $REBOOT_STATE $7
             fi
         ;;
       esac
       ;;
     1)# Previous
-      images_config  $1 $2 $3 $4 $5 $ARCHIVE_VERSION $REBOOT_STATE $OTHER_PARAM 
+      images_config  $1 $2 $3 $4 $5  $REBOOT_STATE $OTHER_PARAM 
       ;;
       
     3)# Save
-       write_config  $1 $2 $3 $4 $5 $ARCHIVE_VERSION $REBOOT_STATE $OTHER_PARAM
-       archive_config  $1 $2 $3 $4 $5 $ARCHIVE_VERSION $REBOOT_STATE $OTHER_PARAM
+       source "$GENERATOR_SCRIPTS_PATH/save_config"
+       archive_config  $1 $2 $3 $4 $5  $REBOOT_STATE $OTHER_PARAM
       ;;
     255)
        ./"$GENERATOR_SCRIPTS_PATH/swdescription_generator.sh";;
    esac
 }
 
-init_variables () {
-
-  APP_NAME=$(grep "Application name" $GENERATOR_CONFIG_FILE | cut -d= -f2)  
-  APP_VERSION=$(grep "Application version" $GENERATOR_CONFIG_FILE | cut -d= -f2)  
-  ROOTFS_NAME=$(grep "Rootfs name" $GENERATOR_CONFIG_FILE | cut -d= -f2)  
-  ROOTFS_VERSION=$(grep "Rootfs version" $GENERATOR_CONFIG_FILE | cut -d= -f2)  
-  ADDED_FILES=$(grep "Added files" $GENERATOR_CONFIG_FILE | cut -d= -f2)  
-  ARCHIVE_VERSION=$(grep "Archive version" $GENERATOR_CONFIG_FILE | cut -d= -f2)  
-  REBOOT_STATE=$(grep "Reboot state" $GENERATOR_CONFIG_FILE | cut -d= -f2)  
-  OTHER_PARAM=$(grep "Other parameter" $GENERATOR_CONFIG_FILE | cut -d= -f2)  
-  
-  echo $APP_NAME $APP_VERSION $ROOTFS_NAME $ROOTFS_VERSION $ADDED_FILES $ARCHIVE_VERSION $REBOOT_STATE $OTHER_PARAM
-
-  }
-
-replace_word () {
-
-  value=$(grep "$2" "$1" | cut -d= -f2)
-  sed -i "s/$2$value/$2$3/" $1 
-}
-
-
-write_config () {
- replace_word  $GENERATOR_CONFIG_FILE "Application name=" $1
- replace_word  $GENERATOR_CONFIG_FILE "Application version=" $2
- replace_word  $GENERATOR_CONFIG_FILE "Rootfs name=" $3
- replace_word  $GENERATOR_CONFIG_FILE "Rootfs version=" $4
- replace_word  $GENERATOR_CONFIG_FILE "Added files=" $5
- replace_word  $GENERATOR_CONFIG_FILE "Archive version=" $6
- replace_word  $GENERATOR_CONFIG_FILE "Reboot state=" $7 
- replace_word  $GENERATOR_CONFIG_FILE "Other parameter=" $8
-
-}
-
-read APP_NAME APP_VERSION ROOTFS_NAME ROOTFS_VERSION ADDED_FILES ARCHIVE_VERSION REBOOT_STATE OTHER_PARAM <<< $(init_variables)
-
-images_config $APP_NAME $APP_VERSION $ROOTFS_NAME $ROOTFS_VERSION $ADDED_FILES $ARCHIVE_VERSION $REBOOT_STATE $OTHER_PARAM
-#image_config
+images_config $APP_NAME $APP_VERSION $ROOTFS_NAME $ROOTFS_VERSION $ADDED_FILES  $REBOOT_STATE $OTHER_PARAM

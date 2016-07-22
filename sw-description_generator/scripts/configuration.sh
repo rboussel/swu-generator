@@ -15,7 +15,7 @@ configuration () {
                 --backtitle "Configuration de l'outil de mise à jour" \
                 --title "Configuration" \
                 --menu "" \
-                20 70 100 \
+                20 150 100 \
                 "${OPTIONS[@]}" \
                 2>&1 >/dev/tty)
   # Init variables
@@ -83,33 +83,20 @@ configuration () {
         ;;
     
     1)  # Get back
-        ./"$GENERATOR_SCRIPTS_PATH/swdescription_generator.sh" $DESTINATION_DIR $SOURCE_DIR $PRIVATE_KEY_PATH $PUBLIC_KEY_PATH 
+        ./"$GENERATOR_SCRIPTS_PATH/swdescription_generator.sh" 
         ;;
     3) # Save
-        write_config $DESTINATION_DIR $SOURCE_DIR $PRIVATE_KEY_PATH $PUBLIC_KEY_PATH 
+        source "$GENERATOR_SCRIPTS_PATH/save_config"
         configuration $DESTINATION_DIR $SOURCE_DIR $PRIVATE_KEY_PATH $PUBLIC_KEY_PATH 
         ;;
      esac
 
    }
 
-replace_word () {
-
-  value=$(grep "$2" "$1" | cut -d= -f2)
-  sed -i "s/$2$value/$2$3/" $1
-
-}
-
-# Write config variables in sw-description generator config file
-write_config () {
-  replace_word $GENERATOR_CONFIG_FILE "Destination directory=" $1
-  replace_word $GENERATOR_CONFIG_FILE "Source directory=" $2
-  replace_word $GENERATOR_CONFIG_FILE "Private key path=" $3
-  replace_word $GENERATOR_CONFIG_FILE "Public key path=" $4
-}
 
 
-configuration $1 $2 $3 $4 
+
+configuration $DESTINATION_DIR $SOURCE_DIR $PRIVATE_KEY_PATH $PUBLIC_KEY_PATH 
 
 
 
