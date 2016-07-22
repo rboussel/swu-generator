@@ -15,7 +15,7 @@ configuration () {
                 --backtitle "Configuration de l'outil de mise à jour" \
                 --title "Configuration" \
                 --menu "" \
-                100 100 100 \
+                20 70 100 \
                 "${OPTIONS[@]}" \
                 2>&1 >/dev/tty)
   # Init variables
@@ -24,7 +24,6 @@ configuration () {
   SOURCE_DIR=$2 
   PRIVATE_KEY_PATH=$3 
   PUBLIC_KEY_PATH=$4 
-  CONFIG_FILE=$5
 
   case $retval in 
     0) # Get parameters
@@ -37,9 +36,9 @@ configuration () {
              2>&1 1>&3 | sed "s/ /\//g" )
              if [ $DESTINATION_DIR ]
              then 
-                configuration  $DESTINATION_DIR $SOURCE_DIR $PRIVATE_KEY_PATH $PUBLIC_KEY_PATH $CONFIG_FILE
+                configuration  $DESTINATION_DIR $SOURCE_DIR $PRIVATE_KEY_PATH $PUBLIC_KEY_PATH 
              else 
-                configuration  $1 $SOURCE_DIR $PRIVATE_KEY_PATH $PUBLIC_KEY_PATH $CONFIG_FILE
+                configuration  $1 $SOURCE_DIR $PRIVATE_KEY_PATH $PUBLIC_KEY_PATH 
              fi
              ;;
         2)
@@ -49,9 +48,9 @@ configuration () {
             2>&1 1>&3 | sed "s/ /\//g"  )
             if [ $SOURCE_DIR ]
              then 
-                configuration  $DESTINATION_DIR $SOURCE_DIR $PRIVATE_KEY_PATH $PUBLIC_KEY_PATH $CONFIG_FILE
+                configuration  $DESTINATION_DIR $SOURCE_DIR $PRIVATE_KEY_PATH $PUBLIC_KEY_PATH 
              else 
-                configuration  $DESTINATION_DIR $2 $PRIVATE_KEY_PATH $PUBLIC_KEY_PATH $CONFIG_FILE
+                configuration  $DESTINATION_DIR $2 $PRIVATE_KEY_PATH $PUBLIC_KEY_PATH 
              fi
            ;;
             
@@ -60,12 +59,12 @@ configuration () {
             --backtitle "Configuration" \
             --inputbox "Entrez le chemin de la clé privée" 8 60 $3 \
             2>&1 1>&3 | sed "s/ /\//g" )
-            if [ $PRIVATE_KEY_PATH = "0" ]
+            if [ $PRIVATE_KEY_PATH ]
              then 
-                configuration  $DESTINATION_DIR $SOURCE_DIR $PRIVATE_KEY_PATH $PUBLIC_KEY_PATH $CONFIG_FILE
+                configuration  $DESTINATION_DIR $SOURCE_DIR $PRIVATE_KEY_PATH $PUBLIC_KEY_PATH 
              else 
-                configuration  $DESTINATION_DIR $SOURCE_DIR $3 $PUBLIC_KEY_PATH $CONFIG_FILE
-             fi
+                configuration  $DESTINATION_DIR $SOURCE_DIR $3 $PUBLIC_KEY_PATH 
+                fi
             ;;
 
         4)
@@ -73,24 +72,22 @@ configuration () {
             --backtitle "Configuration" \
             --inputbox "Entrez le chemin de la clé publique" 8 60 $4 \
             2>&1 1>&3 | sed "s/ /\//g" )
-            if [ $PUBLIC_KEY_PATH = "0" ]
+            if [ $PUBLIC_KEY_PATH ]
              then 
-                configuration  $DESTINATION_DIR $SOURCE_DIR $PRIVATE_KEY_PATH $PUBLIC_KEY_PATH $CONFIG_FILE
+                configuration  $DESTINATION_DIR $SOURCE_DIR $PRIVATE_KEY_PATH $PUBLIC_KEY_PATH 
              else 
-                configuration  $DESTINATION_DIR $SOURCE_DIR $PRIVATE_KEY_PATH $4 $CONFIG_FILE
-             fi
+                configuration  $DESTINATION_DIR $SOURCE_DIR $PRIVATE_KEY_PATH $4           
+                fi
             ;;
             esac 
         ;;
     
     1)  # Get back
-        ./swdescription_generator.sh $DESTINATION_DIR $SOURCE_DIR $PRIVATE_KEY_PATH $PUBLIC_KEY_PATH $CONFIG_FILE
-
+        ./"$GENERATOR_SCRIPTS_PATH/swdescription_generator.sh" $DESTINATION_DIR $SOURCE_DIR $PRIVATE_KEY_PATH $PUBLIC_KEY_PATH 
         ;;
     3) # Save
-        write_config $DESTINATION_DIR $SOURCE_DIR $PRIVATE_KEY_PATH $PUBLIC_KEY_PATH $CONFIG_FILE
-        configuration $DESTINATION_DIR $SOURCE_DIR $PRIVATE_KEY_PATH $PUBLIC_KEY_PATH $CONFIG_FILE
-
+        write_config $DESTINATION_DIR $SOURCE_DIR $PRIVATE_KEY_PATH $PUBLIC_KEY_PATH 
+        configuration $DESTINATION_DIR $SOURCE_DIR $PRIVATE_KEY_PATH $PUBLIC_KEY_PATH 
         ;;
      esac
 
@@ -98,23 +95,21 @@ configuration () {
 
 replace_word () {
 
-  value=$(grep $2 $1 | cut -d= -f2)
-  sed -i "s/$value/$3" $1
+  value=$(grep "$2" "$1" | cut -d= -f2)
+  sed -i "s/$2$value/$2$3/" $1
 
 }
 
 # Write config variables in sw-description generator config file
 write_config () {
-  replace_word $5 "Destination directory" $1
-  replace_word $5 "Source directory" $2
-  replace_word $5 "Private key path" $3
-  replace_word $5 "Public key path" $4
+  replace_word $GENERATOR_CONFIG_FILE "Destination directory=" $1
+  replace_word $GENERATOR_CONFIG_FILE "Source directory=" $2
+  replace_word $GENERATOR_CONFIG_FILE "Private key path=" $3
+  replace_word $GENERATOR_CONFIG_FILE "Public key path=" $4
 }
 
-exec 3>&1
 
-configuration $1 $2 $3 $4 $5
-exec 3>&-
+configuration $1 $2 $3 $4 
 
 
 

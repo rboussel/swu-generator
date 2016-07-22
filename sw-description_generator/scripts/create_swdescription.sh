@@ -1,13 +1,11 @@
 #!/bin/sh
 # images_config - A shell script to configure names and versions of files to include in sw-description
 
-CONFIG_FILE=$1
-
 # Get information about images
 images_config () {
 
   OPTIONS=(1 "Nom de l'Application ($1) --->" 
-           2 "Version de l'Application ($2) ---> " 
+           2 "Version de l'Application ($2) --->" 
            3 "Nom du rootfs ($3) --->"
            4 "Version du rootfs ($4) --->"
            5 "Fichiers supplémentaires ($5) --->"
@@ -18,7 +16,7 @@ images_config () {
          --extra-label "Sauvegarder" \
          --cancel-label "Précédent" \
          --backtitle "Création de sw-description" \
-         --title "Configuration des images " \
+         --title "Configuration des images" \
          --menu "" \
          20 70 100 \
          "${OPTIONS[@]}" \
@@ -106,14 +104,14 @@ images_config () {
         esac
        ;;
     1) 
-       ./swdescription_generator.sh
+       ./"$GENERATOR_SCRIPTS_PATH/swdescription_generator.sh"
        ;;
     3)
         write_config $APP_NAME $APP_VERSION $ROOTFS_NAME $ROOTFS_VERSION $ADDED_FILES $6 $7 $8 
         images_config $APP_NAME $APP_VERSION $ROOTFS_NAME $ROOTFS_VERSION $ADDED_FILES $6 $7 $8 
        ;; 
     255) 
-       ./swdescription_generator.sh 
+       ./"$GENERATOR_SCRIPTS_PATH/swdescription_generator.sh"
        ;;
       
     esac
@@ -198,20 +196,20 @@ archive_config () {
        archive_config  $1 $2 $3 $4 $5 $ARCHIVE_VERSION $REBOOT_STATE $OTHER_PARAM
       ;;
     255)
-       ./swdescription_generator.sh;;
+       ./"$GENERATOR_SCRIPTS_PATH/swdescription_generator.sh";;
    esac
 }
 
 init_variables () {
 
-  APP_NAME=$(grep "Application name" $CONFIG_FILE | cut -d= -f2)  
-  APP_VERSION=$(grep "Application version" $CONFIG_FILE | cut -d= -f2)  
-  ROOTFS_NAME=$(grep "Rootfs name" $CONFIG_FILE | cut -d= -f2)  
-  ROOTFS_VERSION=$(grep "Rootfs version" $CONFIG_FILE | cut -d= -f2)  
-  ADDED_FILES=$(grep "Added files" $CONFIG_FILE | cut -d= -f2)  
-  ARCHIVE_VERSION=$(grep "Archive version" $CONFIG_FILE | cut -d= -f2)  
-  REBOOT_STATE=$(grep "Reboot state" $CONFIG_FILE | cut -d= -f2)  
-  OTHER_PARAM=$(grep "Other parameter" $CONFIG_FILE | cut -d= -f2)  
+  APP_NAME=$(grep "Application name" $GENERATOR_CONFIG_FILE | cut -d= -f2)  
+  APP_VERSION=$(grep "Application version" $GENERATOR_CONFIG_FILE | cut -d= -f2)  
+  ROOTFS_NAME=$(grep "Rootfs name" $GENERATOR_CONFIG_FILE | cut -d= -f2)  
+  ROOTFS_VERSION=$(grep "Rootfs version" $GENERATOR_CONFIG_FILE | cut -d= -f2)  
+  ADDED_FILES=$(grep "Added files" $GENERATOR_CONFIG_FILE | cut -d= -f2)  
+  ARCHIVE_VERSION=$(grep "Archive version" $GENERATOR_CONFIG_FILE | cut -d= -f2)  
+  REBOOT_STATE=$(grep "Reboot state" $GENERATOR_CONFIG_FILE | cut -d= -f2)  
+  OTHER_PARAM=$(grep "Other parameter" $GENERATOR_CONFIG_FILE | cut -d= -f2)  
   
   echo $APP_NAME $APP_VERSION $ROOTFS_NAME $ROOTFS_VERSION $ADDED_FILES $ARCHIVE_VERSION $REBOOT_STATE $OTHER_PARAM
 
@@ -225,18 +223,18 @@ replace_word () {
 
 
 write_config () {
- replace_word  $CONFIG_FILE "Application name=" $1
- replace_word  $CONFIG_FILE "Application version=" $2
- replace_word  $CONFIG_FILE "Rootfs name=" $3
- replace_word  $CONFIG_FILE "Rootfs version=" $4
- replace_word  $CONFIG_FILE "Added files=" $5
- replace_word  $CONFIG_FILE "Archive version=" $6
- replace_word  $CONFIG_FILE "Reboot state=" $7 
- replace_word  $CONFIG_FILE "Other parameter=" $8
+ replace_word  $GENERATOR_CONFIG_FILE "Application name=" $1
+ replace_word  $GENERATOR_CONFIG_FILE "Application version=" $2
+ replace_word  $GENERATOR_CONFIG_FILE "Rootfs name=" $3
+ replace_word  $GENERATOR_CONFIG_FILE "Rootfs version=" $4
+ replace_word  $GENERATOR_CONFIG_FILE "Added files=" $5
+ replace_word  $GENERATOR_CONFIG_FILE "Archive version=" $6
+ replace_word  $GENERATOR_CONFIG_FILE "Reboot state=" $7 
+ replace_word  $GENERATOR_CONFIG_FILE "Other parameter=" $8
 
 }
 
 read APP_NAME APP_VERSION ROOTFS_NAME ROOTFS_VERSION ADDED_FILES ARCHIVE_VERSION REBOOT_STATE OTHER_PARAM <<< $(init_variables)
 
 images_config $APP_NAME $APP_VERSION $ROOTFS_NAME $ROOTFS_VERSION $ADDED_FILES $ARCHIVE_VERSION $REBOOT_STATE $OTHER_PARAM
-
+#image_config
