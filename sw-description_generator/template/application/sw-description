@@ -3,9 +3,10 @@ software =
     version = "@version";
     hardware-compatibility = [ "@compatibility" ]; 
     
-    application = {
-        main: {
-  
+    application :
+    {
+        main: 
+        {
             images: (
             {
                 filename = "@filename";
@@ -13,13 +14,11 @@ software =
                 sha256 = @@filename
             }
             );
+        };
 
-
-        }
-
-        alt: {
-            
-             images: (
+        alt: 
+        {
+            images: (
             {
                 filename = "@filename";
                 device = "@alt_device";
@@ -27,7 +26,7 @@ software =
             }
             );
     
-           }
+           };
     };
 }
 

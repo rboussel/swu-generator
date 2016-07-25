@@ -3,7 +3,8 @@
 
 # Get information about images
 images_config () {
-
+  
+  # Box options
   OPTIONS=(1 "Nom de l'Application ($1) --->" 
            2 "Version de l'Application ($2) --->" 
            3 "Nom du rootfs ($3) --->"
@@ -23,7 +24,8 @@ images_config () {
          2>&1 >/dev/tty)
  
   retval=$?
-
+  
+  # Init variables
   APP_NAME=$1 
   APP_VERSION=$2 
   ROOTFS_NAME=$3 
@@ -39,6 +41,7 @@ images_config () {
            --backtitle "Création de la mise à jour" \
            --inputbox "Entrez le nom de l'Application" 8 60 $1 \
            2>&1 1>&3 | sed "s/ /-/g" )   
+           # Save the new value 
            if [ $APP_NAME  ]
            then
               images_config $APP_NAME $APP_VERSION $ROOTFS_NAME $ROOTFS_VERSION $ADDED_FILES  $6 $7 
@@ -180,9 +183,9 @@ archive_config () {
        source "$GENERATOR_SCRIPTS_PATH/save_config"
        archive_config  $1 $2 $3 $4 $5  $REBOOT_STATE $OTHER_PARAM
       ;;
-    255)
+    255)# Escape
        ./"$GENERATOR_SCRIPTS_PATH/swdescription_generator.sh";;
    esac
 }
 
-images_config $APP_NAME $APP_VERSION $ROOTFS_NAME $ROOTFS_VERSION $ADDED_FILES  $REBOOT_STATE $OTHER_PARAM
+images_config $APP_NAME $APP_VERSION $ROOTFS_NAME $ROOTFS_VERSION $ADDED_FILES $REBOOT_STATE $OTHER_PARAM
