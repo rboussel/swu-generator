@@ -64,4 +64,3 @@ create_swu(){
 }
 
 main
-exit 0
