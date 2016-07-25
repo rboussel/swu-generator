@@ -6,7 +6,7 @@ configuration () {
   OPTIONS=(1 "Dossier de destination ($1) --->"
          2 "Dossier source ($2) --->"
          3 "Chemin vers la clé privée ($3) --->" 
-         4 "Chemin vers la clé publique ($4) --->")
+        )
          
    CHOICE=$(dialog --clear \
                 --extra-button  \
@@ -67,18 +67,6 @@ configuration () {
                 fi
             ;;
 
-        4)
-            PUBLIC_KEY_PATH=$(dialog --title "Chemin vers la clé publique" \
-            --backtitle "Configuration" \
-            --inputbox "Entrez le chemin de la clé publique" 8 60 $4 \
-            2>&1 1>&3 | sed "s/ /\//g" )
-            if [ $PUBLIC_KEY_PATH ]
-             then 
-                configuration  $DESTINATION_DIR $SOURCE_DIR $PRIVATE_KEY_PATH $PUBLIC_KEY_PATH 
-             else 
-                configuration  $DESTINATION_DIR $SOURCE_DIR $PRIVATE_KEY_PATH $4           
-                fi
-            ;;
             esac 
         ;;
     
@@ -93,10 +81,6 @@ configuration () {
 
    }
 
-
-
-
-configuration $DESTINATION_DIR $SOURCE_DIR $PRIVATE_KEY_PATH $PUBLIC_KEY_PATH 
-
+configuration $DESTINATION_DIR $SOURCE_DIR $PRIVATE_KEY_PATH 
 
 
