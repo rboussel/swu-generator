@@ -5,12 +5,16 @@
 ########################################
 
 --  What is it ? --
-Sw-description_generator is a tool to generate automatically sw-decsription. 
+Sw-description_generator is a tool to generate automatically sw-description. 
 
 -- How to use it ? --
 Lauch it with ./swdescription_generator.sh
 Configure the generator with the rights path
 Fill in images and archive informations
 Create sw-desctiption  
+
+-- Keys --
+To have secure update, you need to have public and private key. 
+You can generate it with key_generator.sh script
 
 
