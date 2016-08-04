@@ -60,6 +60,7 @@ create_swdescription_sig(){
 create_swu(){
 #que dans les sources aussi 
 	cd $1
+  clear #mettre une jauge 
 	for file in $FILES; do
 		echo $file;done | cpio -ov -H crc > "$2/$3_$4_$5_$6_$7.swu"
 	#rm sw-description sw-description.sig 

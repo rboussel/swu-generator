@@ -71,12 +71,12 @@ configuration () {
         ;;
     
     1)  # Get back
-        ./"$GENERATOR_SCRIPTS_PATH/swdescription_generator.sh" 
-        ;;
+        main_window ;;
     3) # Save
         source "$GENERATOR_SCRIPTS_PATH/save_config"
         configuration $DESTINATION_DIR $SOURCE_DIR $PRIVATE_KEY_PATH $PUBLIC_KEY_PATH 
         ;;
+    255) main_window
      esac
 
    }

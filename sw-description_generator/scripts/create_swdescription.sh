@@ -1,6 +1,43 @@
 #!/bin/sh
 # images_config - A shell script to configure names and versions of files to include in sw-description
 
+CURRENT_APP_VERSION=$APP_VERSION
+CURRENT_ROOTFS_VERSION=$ROOTFS_VERSION
+
+compare_versions () {
+ 
+  major_current=$(echo $1 | cut -d. -f1)
+  major_new=$(echo $2 | cut -d. -f1)
+  if [ $major_new  -gt $major_current ]
+  then 
+    echo "yes"
+  elif [ $major_new  -eq $major_current ]
+  then
+    minor_current=$(echo $1 | cut -d. -f2)
+    minor_new=$(echo $2 | cut -d. -f2)
+    if [ $minor_new -gt $minor_current ]
+    then 
+      echo "yes"
+    elif [ $minor_new -eq $minor_current ]
+    then 
+      revision_current=$(echo $1 | cut -d. -f3)
+      revision_new=$(echo $2 | cut -d. -f3)
+      if [ $revision_new -gt $revision_current ]
+      then 
+        echo "yes"
+      else 
+        echo "no"
+      fi
+    else 
+      echo "no"
+    fi
+  else 
+    echo "no"
+  fi
+}
+
+#verif_version_format () {}
+
 # Get information about images
 images_config () {
   
@@ -56,8 +93,17 @@ images_config () {
            --inputbox "Entrez la version de l'Application" 8 60 $2 \
            2>&1 1>&3 | sed "s/ /./g")
            if [ $APP_VERSION ]
-           then 
-             images_config $APP_NAME $APP_VERSION $ROOTFS_NAME $ROOTFS_VERSION $ADDED_FILES  $6 $7 
+           then
+             $APP_VERSION=verif_version_format $APP_VERSION
+             is_greater=$(compare_versions $CURRENT_APP_VERSION $APP_VERSION ) 
+             if [ $is_greater = "yes" ]
+             then 
+               images_config $APP_NAME $APP_VERSION $ROOTFS_NAME $ROOTFS_VERSION $ADDED_FILES  $6 $7 
+             else 
+               dialog --msgbox "Version plus ancienne que la version actuelle" 10 30; 
+               images_config $APP_NAME $2 $ROOTFS_NAME $ROOTFS_VERSION $ADDED_FILES  $6 $7 
+             fi
+
             else
              images_config $APP_NAME $2 $ROOTFS_NAME $ROOTFS_VERSION $ADDED_FILES  $6 $7 
              fi
@@ -83,10 +129,17 @@ images_config () {
            2>&1 1>&3 | sed "s/ /./g")
            if [ $ROOTFS_VERSION ]
            then 
-             images_config $APP_NAME $APP_VERSION $ROOTFS_NAME $ROOTFS_VERSION $ADDED_FILES  $6 $7 
-           else
-             images_config $APP_NAME $APP_VERSION $ROOTFS_NAME $4 $ADDED_FILES  $6 $7 
+             is_greater=$(compare_versions $CURRENT_ROOTFS_VERSION $ROOTFS_VERSION )
+             if [ $is_greater = "yes" ]
+             then 
+               images_config $APP_NAME $APP_VERSION $ROOTFS_NAME $ROOTFS_VERSION $ADDED_FILES $6 $7 
+             else
+               dialog --msgbox "Version plus ancienne que la version actuelle" 10 30; 
+               images_config $APP_NAME $APP_VERSION $ROOTFS_NAME $4 $ADDED_FILES $6 $7 
              fi
+            else 
+               images_config $APP_NAME $APP_VERSION $ROOTFS_NAME $4 $ADDED_FILES $6 $7 
+            fi
            ;;
 
         5)# Added files 
@@ -108,14 +161,14 @@ images_config () {
         esac
        ;;
     1) 
-       ./"$GENERATOR_SCRIPTS_PATH/swdescription_generator.sh"
+       main_window 
        ;;
     3)
         source "$GENERATOR_SCRIPTS_PATH/save_config" 
         images_config $APP_NAME $APP_VERSION $ROOTFS_NAME $ROOTFS_VERSION $ADDED_FILES  $6 $7 
        ;; 
-    255) 
-       ./"$GENERATOR_SCRIPTS_PATH/swdescription_generator.sh"
+    255)
+       main_window
        ;;
       
     esac
@@ -184,8 +237,7 @@ archive_config () {
        archive_config  $1 $2 $3 $4 $5  $REBOOT_STATE $OTHER_PARAM
       ;;
     255)# Escape
-       ./"$GENERATOR_SCRIPTS_PATH/swdescription_generator.sh";;
+        main_window  
    esac
 }
-
 images_config $APP_NAME $APP_VERSION $ROOTFS_NAME $ROOTFS_VERSION $ADDED_FILES $REBOOT_STATE $OTHER_PARAM

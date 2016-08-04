@@ -40,20 +40,20 @@ main_window () {
      esac
      ;;
    1) #Cancel 
-     exit 0
+     clear
      ;;
     esac
 }
 
 exec 3>&1
-
-main_window 
+ 
+main_window
 
 exec 3>&-
 
 unset "GENERATOR_SCRIPTS_PATH"
 unset "GENERATOR_CONFIG_FILE"
 unset "GENERATOR_TEMPLATE_DIR"
-exit 0
+
 
 
