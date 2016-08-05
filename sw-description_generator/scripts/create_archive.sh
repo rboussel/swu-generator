@@ -5,8 +5,24 @@ FILES="sw-description sw-description.sig"
 
 launch_swu_creation () {
   date=$(date "+%F")
-  lauch_creation "application" $APP_NAME $APP_VERSION $APP_MAIN_DEVICE $APP_ALT_DEVICE $date "APP" 
-  lauch_creation "rootfs" $ROOTFS_NAME $ROOTFS_VERSION $ROOTFS_MAIN_DEVICE $ROOTFS_ALT_DEVICE $date "ROOTFS" 
+
+  if [ $APP_VERSION = $PREV_APP_VERSION -a $APP_NAME = $PREV_APP_NAME ]
+  then  dialog --msgbox "[APP] Version non modifiée" 8 30 
+  else 
+    lauch_creation "application" $APP_NAME $APP_VERSION $APP_MAIN_DEVICE $APP_ALT_DEVICE $date "APP"
+    PREV_APP_NAME=$APP_NAME
+    PREV_APP_VERSION=$APP_VERSION
+  fi
+
+  if [ $ROOTFS_VERSION = $PREV_ROOTFS_VERSION -a $PREV_ROOTFS_NAME = $ROOTFS_NAME ]
+  then dialog --msgbox "[ROOTFS] Version non modifiée" 8 30
+  else 
+    lauch_creation "rootfs" $ROOTFS_NAME $ROOTFS_VERSION $ROOTFS_MAIN_DEVICE $ROOTFS_ALT_DEVICE $date "ROOTFS"
+    PREV_ROOTFS_NAME=$ROOTFS_NAME
+    PREV_ROOTFS_VERSION=$ROOTFS_VERSION
+  fi
+  
+  MENU_CHOICE="MAIN_WINDOW"
  }
 
 # Make Application and Rootfs archives
