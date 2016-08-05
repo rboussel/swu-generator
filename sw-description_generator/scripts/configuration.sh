@@ -3,9 +3,9 @@
 
 configuration () {
   # Options for the box 
-  OPTIONS=(1 "Dossier de destination ($1) --->"
-         2 "Dossier source ($2) --->"
-         3 "Chemin vers la clé privée ($3) --->" 
+  OPTIONS=(1 "Dossier de destination ($DESTINATION_DIR) --->"
+         2 "Dossier source ($SOURCE_DIR) --->"
+         3 "Chemin vers la clé privée ($PRIVATE_KEY_PATH) --->" 
         )
          
    CHOICE=$(dialog --clear \
@@ -20,67 +20,50 @@ configuration () {
                 2>&1 >/dev/tty)
   # Init variables
   retval=$?
-  DESTINATION_DIR=$1
-  SOURCE_DIR=$2 
-  PRIVATE_KEY_PATH=$3 
-  PUBLIC_KEY_PATH=$4 
-
+ 
   case $retval in 
     0) # Get parameters
 
       case $CHOICE in
         1)              
-            DESTINATION_DIR=$(dialog --title "Dossier de destination" \
+            destination_dir=$(dialog --title "Dossier de destination" \
             --backtitle "Configuration" \
-            --inputbox "Entrez le chemin de destination"  8 60 $1 \
+            --inputbox "Entrez le chemin de destination"  8 60 $DESTINATION_DIR \
              2>&1 1>&3 | sed "s/ /\//g" )
-             if [ $DESTINATION_DIR ]
-             then 
-                configuration  $DESTINATION_DIR $SOURCE_DIR $PRIVATE_KEY_PATH $PUBLIC_KEY_PATH 
-             else 
-                configuration  $1 $SOURCE_DIR $PRIVATE_KEY_PATH $PUBLIC_KEY_PATH 
-             fi
+             if [ $DESTINATION_DIR ]; then DESTINATION_DIR=$destination_dir ; fi
+             MENU_CHOICE="CONFIGURE_GENERATOR"
              ;;
         2)
-            SOURCE_DIR=$(dialog --title "Dossier source" \
+            source_dir=$(dialog --title "Dossier source" \
             --backtitle "Configuration " \
-            --inputbox "Entrez le chemin source" 8 60 $2\
+            --inputbox "Entrez le chemin source" 8 60 $SOURCE_DIR \
             2>&1 1>&3 | sed "s/ /\//g"  )
-            if [ $SOURCE_DIR ]
-             then 
-                configuration  $DESTINATION_DIR $SOURCE_DIR $PRIVATE_KEY_PATH $PUBLIC_KEY_PATH 
-             else 
-                configuration  $DESTINATION_DIR $2 $PRIVATE_KEY_PATH $PUBLIC_KEY_PATH 
-             fi
+            if [ $source_dir ]; then SOURCE_DIR=$source_dir; fi
+            MENU_CHOICE="CONFIGURE_GENERATOR"
+
            ;;
             
         3)
-            PRIVATE_KEY_PATH=$(dialog --title "Chemin vers la clé privée" \
+            private_key_path=$(dialog --title "Chemin vers la clé privée" \
             --backtitle "Configuration" \
-            --inputbox "Entrez le chemin de la clé privée" 8 60 $3 \
+            --inputbox "Entrez le chemin de la clé privée" 8 60 $PRIVATE_KEY_PATH \
             2>&1 1>&3 | sed "s/ /\//g" )
-            if [ $PRIVATE_KEY_PATH ]
-             then 
-                configuration  $DESTINATION_DIR $SOURCE_DIR $PRIVATE_KEY_PATH $PUBLIC_KEY_PATH 
-             else 
-                configuration  $DESTINATION_DIR $SOURCE_DIR $3 $PUBLIC_KEY_PATH 
-                fi
+            if [ $private_key_path ]; then PRIVATE_KEY_PATH=$private_key_path; fi
+            MENU_CHOICE="CONFIGURE_GENERATOR"
             ;;
 
             esac 
         ;;
     
     1)  # Get back
-        main_window ;;
+        MENU_CHOICE="MAIN_WINDOW";;
     3) # Save
-        source "$GENERATOR_SCRIPTS_PATH/save_config"
-        configuration $DESTINATION_DIR $SOURCE_DIR $PRIVATE_KEY_PATH $PUBLIC_KEY_PATH 
-        ;;
-    255) main_window
+        $SAVE_ENV
+        MENU_CHOICE="CONFIGURE_GENERATOR";;
+    255) MENU_CHOICE="MAIN_WINDOW";;
      esac
-
    }
 
-configuration $DESTINATION_DIR $SOURCE_DIR $PRIVATE_KEY_PATH 
+
 
 

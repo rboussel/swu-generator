@@ -1,0 +1,34 @@
+#!/bin/sh
+# swdescription_generator.sh - A shell script to print menu and init config variables 
+
+#Script Configuration
+export GENERATOR_CONFIG_FILE="config/generator.config"
+export GENERATOR_SCRIPTS_PATH="scripts/"
+export GENERATOR_TEMPLATE_DIR="template"
+
+source $GENERATOR_CONFIG_FILE
+source $GENERATOR_SCRIPTS_PATH/save_config
+source $GENERATOR_SCRIPTS_PATH/configure_swdescription.sh  
+source $GENERATOR_SCRIPTS_PATH/swdescription_generator.sh  
+source $GENERATOR_SCRIPTS_PATH/configuration.sh            
+source $GENERATOR_SCRIPTS_PATH/create_archive.sh 
+
+SAVE_ENV="save_config"
+MENU_CHOICE="MAIN_WINDOW"
+CURRENT_APP_VERSION=$APP_VERSION
+CURRENT_ROOTFS_VERSION=$ROOTFS_VERSION
+
+
+
+exec 3>&1
+  
+while [ 1 ]; do 
+  case $MENU_CHOICE in 
+          "MAIN_WINDOW") main_window ;;
+          "CONFIGURE_IMAGE") images_config ;;
+          "CONFIGURE_ARCHIVE") archive_config  ;;
+          "CONFIGURE_GENERATOR") configuration ;;
+          "CREATE_SWU") launch_swu_creation ;;
+  esac
+done
+exec 3>&-

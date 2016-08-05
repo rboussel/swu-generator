@@ -3,7 +3,7 @@
 
 FILES="sw-description sw-description.sig"
 
-main () {
+launch_swu_creation () {
   date=$(date "+%F")
   lauch_creation "application" $APP_NAME $APP_VERSION $APP_MAIN_DEVICE $APP_ALT_DEVICE $date "APP" 
   lauch_creation "rootfs" $ROOTFS_NAME $ROOTFS_VERSION $ROOTFS_MAIN_DEVICE $ROOTFS_ALT_DEVICE $date "ROOTFS" 
@@ -14,7 +14,7 @@ lauch_creation () {
 
   fill_in_swdescription $1 $SOURCE_DIR $2 $3 $COMPATIBILITY $4 $5
   compute_hash $SOURCE_DIR 
-  create_swdescription_sig $PRIVATE_KEY_PATH $SOURCE_DIR
+  configure_swdescription_sig $PRIVATE_KEY_PATH $SOURCE_DIR
   if [ $OTHER_PARAM = "no" ]
   then 
     create_swu $SOURCE_DIR $DESTINATION_DIR $6 $7 $3 $REBOOT_STATE 
@@ -46,7 +46,7 @@ compute_hash(){
 }
 
 # Create the signature
-create_swdescription_sig(){
+configure_swdescription_sig(){
 	if test -f $1
 	then
 		openssl dgst -sha256 -sign $1 "$2/sw-description" > "$2/sw-description.sig"
@@ -68,4 +68,4 @@ create_swu(){
   cd -
 }
 
-main
+

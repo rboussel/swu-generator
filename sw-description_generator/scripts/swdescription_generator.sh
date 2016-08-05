@@ -1,11 +1,5 @@
 #!/bin/sh
-# swdescription_generator.sh - A shell script to print menu and init config variables 
-
-#Script Configuration
-export GENERATOR_CONFIG_FILE="config/generator.config"
-export GENERATOR_SCRIPTS_PATH="scripts/"
-export GENERATOR_TEMPLATE_DIR="template"
-source $GENERATOR_CONFIG_FILE
+# swdescription_generator.sh - A shell script to print menu
 
 # Print menu
 main_window () {
@@ -28,32 +22,28 @@ main_window () {
   case $retval in 
   0) #Chose an option 
     case $CHOICE in
-          1)# Configure sw-description 
-            source $GENERATOR_SCRIPTS_PATH/create_swdescription.sh  
+          1)# Configure sw-description
+              MENU_CHOICE="CONFIGURE_IMAGE"
               ;;
           2)# Configure the generator
-            source $GENERATOR_SCRIPTS_PATH/configuration.sh            
+              MENU_CHOICE="CONFIGURE_GENERATOR"
             ;;
           3)# Create .swu archive 
-            source $GENERATOR_SCRIPTS_PATH/create_archive.sh 
+              MENU_CHOICE="CREATE_SWU"
             ;;
      esac
      ;;
-   1) #Cancel 
+   1) #Cancel
      clear
+     exit 0
      ;;
     esac
 }
 
-exec 3>&1
+
  
-main_window
 
-exec 3>&-
 
-unset "GENERATOR_SCRIPTS_PATH"
-unset "GENERATOR_CONFIG_FILE"
-unset "GENERATOR_TEMPLATE_DIR"
 
 
 
