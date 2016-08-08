@@ -91,7 +91,7 @@ images_config () {
            --inputbox "Entrez le nom de l'Application" 8 60 $APP_NAME \
            2>&1 1>&3 | sed "s/ /-/g" )   
            # Save the new value 
-           if [ $app_name  ]; then APP_NAME=$app_name; fi
+           if [ $app_name  ]; then APP_NAME=$app_name; IS_CONFIG_SAVED="false"; fi
            MENU_CHOICE="CONFIGURE_IMAGE" 
             
             ;;
@@ -105,7 +105,7 @@ images_config () {
            then
              app_version=$(verif_version_format $app_version)
              is_greater=$(compare_versions $CURRENT_APP_VERSION $app_version )
-             if [ $is_greater = "yes" ]; then APP_VERSION=$app_version 
+             if [ $is_greater = "yes" ]; then APP_VERSION=$app_version ; IS_CONFIG_SAVED="false"
              else dialog --msgbox "Version plus ancienne que la version actuelle" 10 30; 
             fi
            fi
@@ -117,7 +117,7 @@ images_config () {
            --backtitle "Création de la mise à jour" \
            --inputbox "Entrez le nom du rootfs" 8 60 $ROOTFS_NAME \
            2>&1 1>&3 | sed "s/ /-/g")
-           if [ $rootfs_name ]; then ROOTFS_NAME=$rootfs_name; fi 
+           if [ $rootfs_name ]; then ROOTFS_NAME=$rootfs_name; IS_CONFIG_SAVED="false"; fi 
            MENU_CHOICE="CONFIGURE_IMAGE" 
           
           ;;
@@ -131,7 +131,7 @@ images_config () {
            then 
              rootfs_version=$(verif_version_format $rootfs_version)
              is_greater=$(compare_versions $CURRENT_ROOTFS_VERSION $rootfs_version )
-             if [ $is_greater = "yes" ]; then ROOTFS_VERSION=$rootfs_version 
+             if [ $is_greater = "yes" ]; then ROOTFS_VERSION=$rootfs_version ; IS_CONFIG_SAVED="false"
              else dialog --msgbox "Version plus ancienne que la version actuelle" 10 30; fi 
            fi
            MENU_CHOICE="CONFIGURE_IMAGE" 
@@ -143,7 +143,7 @@ images_config () {
            --backtitle "Création de la mise à jour" \
            --inputbox "Entrez le chemin des fichiers à ajouter à l'archive de mise à jour" 8 60 $ADDED_FILES \
            2>&1 1>&3 | sed "s/ /,/g")
-           if [ $added_files ]; then ADDED_FILES=$added_files; fi
+           if [ $added_files ]; then ADDED_FILES=$added_files; IS_CONFIG_SAVED="false"; fi
            MENU_CHOICE="CONFIGURE_IMAGE" 
            ;;
 
@@ -196,6 +196,7 @@ archive_config () {
            --yesno "Le système doit il redémarrer après la mise à jour ?" 8 60  \
            2>&1 1>&3) 
            if [ $? = "0" ]; then REBOOT_STATE="REBOOT"; else REBOOT_STATE="NORMAL"; fi
+           IS_CONFIG_SAVED="false"
            MENU_CHOICE="CONFIGURE_ARCHIVE"
           ;;
 
@@ -204,7 +205,7 @@ archive_config () {
            --backtitle "Configuration de l'archive" \
            --inputbox "Entrez la liste des paramètres à ajouter au nom de l'archive" 8 60 $OTHER_PARAM \
            2>&1 1>&3 | sed "s/ /,/g")
-        if [ $other_param ]; then OTHER_PARAM=$other_param; fi
+        if [ $other_param ]; then OTHER_PARAM=$other_param; IS_CONFIG_SAVED="false"; fi
         MENU_CHOICE="CONFIGURE_ARCHIVE"
         ;;
       *) echo "Option error" ;; 

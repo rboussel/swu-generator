@@ -29,7 +29,7 @@ main_window () {
               MENU_CHOICE="CONFIGURE_GENERATOR"
             ;;
           3)# Create .swu archive
-              $SAVE_ENV
+              if [ $IS_CONFIG_SAVED = "false" ]; then $SAVE_ENV; fi
               MENU_CHOICE="CREATE_SWU"
             ;;
      esac

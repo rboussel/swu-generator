@@ -13,6 +13,7 @@ save_config () {
 
   dialog  --title "Confirmation de sauvegarde" \
           --msgbox "Configurations sauvegardés" 8 30 
+  IS_CONFIG_SAVED="true"
  
 }
 

@@ -9,6 +9,7 @@ IS_ROOTFS_MAJ="false"
 launch_swu_creation () {
   date=$(date "+%F")
 
+  #Verif if app configs changed
   if [ $APP_VERSION = $PREV_APP_VERSION -a $APP_NAME = $PREV_APP_NAME ]
   then  dialog --title "Création de l'archive de mise à jour" \
               --msgbox "[APP] Version non modifiée" 8 30 
@@ -18,7 +19,7 @@ launch_swu_creation () {
     PREV_APP_NAME=$APP_NAME
     PREV_APP_VERSION=$APP_VERSION
   fi
-
+  #Verif if rootfs configs changed
   if [ $ROOTFS_VERSION = $PREV_ROOTFS_VERSION -a $PREV_ROOTFS_NAME = $ROOTFS_NAME ]
   then dialog --title "Création de l'archive de mise à jour" \
             --msgbox "[ROOTFS] Version non modifiée" 8 30
@@ -28,6 +29,8 @@ launch_swu_creation () {
     PREV_ROOTFS_NAME=$ROOTFS_NAME
     PREV_ROOTFS_VERSION=$ROOTFS_VERSION
   fi
+
+  #If an archive is created, generate a version file
   if [ "$IS_APP_MAJ" == "true" -o "$IS_ROOTFS_MAJ" == "true" ]
   then
     write_version_file; 
@@ -124,7 +127,6 @@ configure_swdescription_sig(){
 
 # Put files in the cpio archive
 create_swu(){
-#que dans les sources aussi 
 	cd $1
   clear 
   archive_name="$3_$4_$5_$6_$7.swu"
@@ -144,6 +146,5 @@ create_app_archive () {
   for file in $files; do  
     echo $file ;done | cpio -ov -H crc > "$DESTINATION_DIR/$2_APP_$3.swu"
   rm $1 $MINIMAL_ROOTFS_VERSION_FILE
-
 }
 

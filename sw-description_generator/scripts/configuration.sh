@@ -30,7 +30,7 @@ configuration () {
             --backtitle "Configuration" \
             --inputbox "Entrez le chemin de destination"  8 60 $DESTINATION_DIR \
              2>&1 1>&3 | sed "s/ /\//g" )
-             if [ $DESTINATION_DIR ]; then DESTINATION_DIR=$destination_dir ; fi
+             if [ $DESTINATION_DIR ]; then DESTINATION_DIR=$destination_dir; IS_CONFIG_SAVED="false" ; fi
              MENU_CHOICE="CONFIGURE_GENERATOR"
              ;;
         2)
@@ -38,7 +38,7 @@ configuration () {
             --backtitle "Configuration " \
             --inputbox "Entrez le chemin source" 8 60 $SOURCE_DIR \
             2>&1 1>&3 | sed "s/ /\//g"  )
-            if [ $source_dir ]; then SOURCE_DIR=$source_dir; fi
+            if [ $source_dir ]; then SOURCE_DIR=$source_dir; IS_CONFIG_SAVED="false" ; fi
             MENU_CHOICE="CONFIGURE_GENERATOR"
 
            ;;
@@ -48,7 +48,7 @@ configuration () {
             --backtitle "Configuration" \
             --inputbox "Entrez le chemin de la clé privée" 8 60 $PRIVATE_KEY_PATH \
             2>&1 1>&3 | sed "s/ /\//g" )
-            if [ $private_key_path ]; then PRIVATE_KEY_PATH=$private_key_path; fi
+            if [ $private_key_path ]; then PRIVATE_KEY_PATH=$private_key_path; IS_CONFIG_SAVED="false" ; fi
             MENU_CHOICE="CONFIGURE_GENERATOR"
             ;;
          *) echo "Option error" ;;    
