@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # swdescription_generator.sh - A shell script to print menu
 
 # Print menu
@@ -28,7 +28,8 @@ main_window () {
           2)# Configure the generator
               MENU_CHOICE="CONFIGURE_GENERATOR"
             ;;
-          3)# Create .swu archive 
+          3)# Create .swu archive
+              $SAVE_ENV
               MENU_CHOICE="CREATE_SWU"
             ;;
      esac
