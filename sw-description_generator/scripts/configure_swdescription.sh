@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # images_config - A shell script to configure names and versions of files to include in sw-description
 
 
@@ -147,8 +147,10 @@ images_config () {
            MENU_CHOICE="CONFIGURE_IMAGE" 
            ;;
 
-        6) #Next page
-           MENU_CHOICE="CONFIGURE_ARCHIVE";; 
+        6)# Next page
+           MENU_CHOICE="CONFIGURE_ARCHIVE";;
+        7)# Error
+          echo "Option error" ;; 
         esac
        ;;
     1) 
@@ -163,6 +165,7 @@ images_config () {
     255)
        MENU_CHOICE="MAIN_WINDOW" 
        ;;
+    *) echo "Option error" ;;
     esac
 }
 
@@ -204,6 +207,7 @@ archive_config () {
         if [ $other_param ]; then OTHER_PARAM=$other_param; fi
         MENU_CHOICE="CONFIGURE_ARCHIVE"
         ;;
+      *) echo "Option error" ;; 
       esac
       ;;
     1)# Previous
@@ -216,6 +220,6 @@ archive_config () {
       ;;
     255)# Escape
         MENU_CHOICE="MAIN_WINDOW"  
-              
+    *) echo "Option error" ;; 
    esac
 }

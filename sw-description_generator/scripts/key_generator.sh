@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # key_generator.sh - A shell script to get public and private key
 
 # Create key 

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # configuration.sh - A shell script to configure sw-description generator 
 
 configuration () {
@@ -51,6 +51,7 @@ configuration () {
             if [ $private_key_path ]; then PRIVATE_KEY_PATH=$private_key_path; fi
             MENU_CHOICE="CONFIGURE_GENERATOR"
             ;;
+         *) echo "Option error" ;;    
 
             esac 
         ;;
@@ -61,6 +62,7 @@ configuration () {
         $SAVE_ENV
         MENU_CHOICE="CONFIGURE_GENERATOR";;
     255) MENU_CHOICE="MAIN_WINDOW";;
+    *) echo "Option error" ;;
      esac
    }
 

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # swdescription_generator.sh - A shell script to print menu and init config variables 
 
 #Script Configuration
@@ -13,7 +13,7 @@ source $GENERATOR_SCRIPTS_PATH/swdescription_generator.sh
 source $GENERATOR_SCRIPTS_PATH/configuration.sh            
 source $GENERATOR_SCRIPTS_PATH/create_archive.sh 
 
-SAVE_ENV="save_config"
+SAVE_ENV="save_dialog"
 MENU_CHOICE="MAIN_WINDOW"
 CURRENT_APP_VERSION=$APP_VERSION
 CURRENT_ROOTFS_VERSION=$ROOTFS_VERSION
