@@ -40,8 +40,8 @@ launch_swu_creation () {
 
 show_version_file () {
   
-  result=$(dialog --no-lines --title 'Version file' --backtitle 'Add Comments' --editbox version.txt 30 90 2>&1 1>&3)
-  echo -e "$result" > version.txt
+  result=$(dialog --no-lines --title 'Version file' --backtitle 'Add Comments' --editbox  $VERSION_FILE 30 90 2>&1 1>&3)
+  echo -e "$result" > $VERSION_FILE
 
 }
 
@@ -58,7 +58,7 @@ write_version_file () {
 # \n \
 # \n \
 # \n\
- Nom: $APP_NAME Version: $APP_VERSION Version Rootfs minimale: $CURRENT_ROOTFS_VERSION \n \n " > version.txt
+ Nom: $APP_NAME Version: $APP_VERSION Version Rootfs minimale: $CURRENT_ROOTFS_VERSION \n \n " > $VERSION_FILE
   fi
 
   if [ $IS_ROOTFS_MAJ = "true" ]; then 
@@ -70,7 +70,7 @@ write_version_file () {
 # \n \
 # \n \
 # \n\
- Nom: $ROOTFS_NAME Version: $ROOTFS_VERSION \n \n" >> version.txt
+ Nom: $ROOTFS_NAME Version: $ROOTFS_VERSION \n \n" >> $VERSION_FILE
   fi
 
 }
@@ -126,12 +126,24 @@ configure_swdescription_sig(){
 create_swu(){
 #que dans les sources aussi 
 	cd $1
-  clear #mettre une jauge 
-	for file in $FILES; do
-		echo $file;done | cpio -ov -H crc > "$2/$3_$4_$5_$6_$7.swu"
-	#rm sw-description sw-description.sig 
-  FILES="sw-description sw-description.sig"
-  cd -
+  clear 
+  archive_name="$3_$4_$5_$6_$7.swu"
+
+  for file in $FILES; do
+		echo $file;done | cpio -ov -H crc > "$DESTINATION_DIR/$archive_name"
+    FILES="sw-description sw-description.sig"
+  rm "sw-description" "sw-description.sig"
+  cd - 
+  if [ $4 = "APP" ]; then create_app_archive "$DESTINATION_DIR/$archive_name" $3 $5 ; fi
 }
 
+create_app_archive () {
+  
+  echo $CURRENT_ROOTFS_VERSION > $MINIMAL_ROOTFS_VERSION_FILE
+  files="$1 $MINIMAL_ROOTFS_VERSION_FILE"
+  for file in $files; do  
+    echo $file ;done | cpio -ov -H crc > "$DESTINATION_DIR/$2_APP_$3.swu"
+  rm $1 $MINIMAL_ROOTFS_VERSION_FILE
+
+}
 
