@@ -11,16 +11,14 @@ save_config () {
   sort -u "$GENERATOR_CONFIG_FILE.tmp" > $GENERATOR_CONFIG_FILE
   rm $GENERATOR_CONFIG_FILE.tmp
 
-  dialog  --title "Confirmation de sauvegarde" \
-          --msgbox "Configurations sauvegardés" 8 30 
+  dialog  --title "Confirmation de sauvegarde" --msgbox "Configurations sauvegardés" 8 30 
   IS_CONFIG_SAVED="true"
  
 }
 
 save_dialog () {
 
-  dialog  --title "Confirmation de sauvegarde" \
-          --yesno "Les configurations vont être sauvegardées" 10 60
+  dialog  --title "Confirmation de sauvegarde" --yesno "Les configurations vont être sauvegardées" 10 60
 
   if [ $? = "0" ]
   then 

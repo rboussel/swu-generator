@@ -5,24 +5,22 @@ FILES="sw-description sw-description.sig"
 IS_APP_MAJ="false"
 IS_ROOTFS_MAJ="false"
 
-
 launch_swu_creation () {
   date=$(date "+%F")
 
   #Verif if app configs changed
   if [ $APP_VERSION = $PREV_APP_VERSION -a $APP_NAME = $PREV_APP_NAME ]
-  then  dialog --title "Création de l'archive de mise à jour" \
-              --msgbox "[APP] Version non modifiée" 8 30 
+  then  dialog --title "Création de l'archive de mise à jour" --msgbox "[APP] Version non modifiée" 8 30 
   else 
     IS_APP_MAJ="true"
     lauch_creation "application" $APP_NAME $APP_VERSION $APP_MAIN_DEVICE $APP_ALT_DEVICE $date "APP"
     PREV_APP_NAME=$APP_NAME
     PREV_APP_VERSION=$APP_VERSION
   fi
+
   #Verif if rootfs configs changed
   if [ $ROOTFS_VERSION = $PREV_ROOTFS_VERSION -a $PREV_ROOTFS_NAME = $ROOTFS_NAME ]
-  then dialog --title "Création de l'archive de mise à jour" \
-            --msgbox "[ROOTFS] Version non modifiée" 8 30
+  then dialog --title "Création de l'archive de mise à jour" --msgbox "[ROOTFS] Version non modifiée" 8 30
   else 
     IS_ROOTFS_MAJ="true"
     lauch_creation "rootfs" $ROOTFS_NAME $ROOTFS_VERSION $ROOTFS_MAIN_DEVICE $ROOTFS_ALT_DEVICE $date "ROOTFS"
@@ -52,28 +50,28 @@ write_version_file () {
  
   if [ $IS_APP_MAJ = "true" ]; then 
   echo -e " \
-# Fichier de Mise à jour -- $(date)\n \
-# \n \
-# [ APPLICATION ] \n \
-# Commentaires: \n \
-# \n \
-# \n \
-# \n \
-# \n \
-# \n\
- Nom: $APP_NAME Version: $APP_VERSION Version Rootfs minimale: $CURRENT_ROOTFS_VERSION \n \n " > $VERSION_FILE
+  # Fichier de Mise à jour -- $(date)\n \
+  # \n \
+  # [ APPLICATION ] \n \
+  # Commentaires: \n \
+  # \n \
+  # \n \
+  # \n \
+  # \n \
+  # \n\
+  Nom: $APP_NAME Version: $APP_VERSION Version Rootfs minimale: $CURRENT_ROOTFS_VERSION \n \n " > $VERSION_FILE
   fi
 
   if [ $IS_ROOTFS_MAJ = "true" ]; then 
   echo -e " \
-# [ ROOTFS ] \n \
-# Commentaires: \n \
-# \n \
-# \n \
-# \n \
-# \n \
-# \n\
- Nom: $ROOTFS_NAME Version: $ROOTFS_VERSION \n \n" >> $VERSION_FILE
+  # [ ROOTFS ] \n \
+  # Commentaires: \n \
+  # \n \
+  # \n \
+  # \n \
+  # \n \
+  # \n\
+  Nom: $ROOTFS_NAME Version: $ROOTFS_VERSION \n \n" >> $VERSION_FILE
   fi
 
 }

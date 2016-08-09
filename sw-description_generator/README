@@ -8,10 +8,10 @@
 Sw-description_generator is a tool to generate automatically sw-description. 
 
 -- How to use it ? --
-Lauch it with xterm -e source scripts/swdescription_generator.sh
+Lauch swu-generator
 Configure the generator with the rights path
 Fill in images and archive informations
-Create sw-desctiption  
+Create sw-description  
 
 -- Keys --
 To have secure update, you need to have public and private key. 

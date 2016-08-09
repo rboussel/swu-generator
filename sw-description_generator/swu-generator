@@ -1,30 +1,38 @@
 #!/bin/bash
-# swdescription_generator.sh - A shell script to print menu and init config variables 
+# swu-generator - A shell script to init variables 
+# and redirect ro the correct function
 
-#Script Configuration
+# Sources scripts and variables
 export GENERATOR_CONFIG_FILE="config/generator.config"
 export GENERATOR_SCRIPTS_PATH="scripts/"
 export GENERATOR_TEMPLATE_DIR="template"
 
 source $GENERATOR_CONFIG_FILE
-source $GENERATOR_SCRIPTS_PATH/save_config
-source $GENERATOR_SCRIPTS_PATH/configure_swdescription.sh  
-source $GENERATOR_SCRIPTS_PATH/swdescription_generator.sh  
-source $GENERATOR_SCRIPTS_PATH/configuration.sh            
+source $GENERATOR_SCRIPTS_PATH/save_config.sh
+source $GENERATOR_SCRIPTS_PATH/menus/configure_swdescription.sh  
+source $GENERATOR_SCRIPTS_PATH/menus/main_menu.sh  
+source $GENERATOR_SCRIPTS_PATH/menus/configure_archive.sh  
+source $GENERATOR_SCRIPTS_PATH/menus/configure_generator.sh            
 source $GENERATOR_SCRIPTS_PATH/create_archive.sh 
+source $GENERATOR_SCRIPTS_PATH/operations.sh 
 
+# Init variables
+# Functions
 SAVE_ENV="save_dialog"
+VERIFY_INPUT="verify_input"
+TEST_VERSIONS="test_versions"
+# State Variables
 MENU_CHOICE="MAIN_WINDOW"
 IS_CONFIG_SAVED="true"
-VERSION_FILE="$DESTINATION_DIR/version.txt"
-MINIMAL_ROOTFS_VERSION_FILE="$DESTINATION_DIR/minimal_rootfs_version"
 CURRENT_APP_VERSION=$APP_VERSION
 CURRENT_ROOTFS_VERSION=$ROOTFS_VERSION
 PREV_APP_VERSION=$APP_VERSION
 PREV_ROOTFS_VERSION=$ROOTFS_VERSION
 PREV_APP_NAME=$APP_NAME
 PREV_ROOTFS_NAME=$ROOTFS_NAME
-
+# Files variables
+VERSION_FILE="$DESTINATION_DIR/version.txt"
+MINIMAL_ROOTFS_VERSION_FILE="$DESTINATION_DIR/minimal_rootfs_version"
 
 exec 3>&1
   
@@ -33,7 +41,7 @@ while [ 1 ]; do
           "MAIN_WINDOW") main_window ;;
           "CONFIGURE_IMAGE") images_config ;;
           "CONFIGURE_ARCHIVE") archive_config  ;;
-          "CONFIGURE_GENERATOR") configuration ;;
+          "CONFIGURE_GENERATOR") generator_config ;;
           "CREATE_SWU") launch_swu_creation ;;
   esac
 done

@@ -1,0 +1,15 @@
+ADDED_FILES=no
+APP_ALT_DEVICE=/dev/mmcblk0p6
+APP_MAIN_DEVICE=/dev/mmcblk0p5
+APP_NAME=app_part_image.ext4
+APP_VERSION=0.0.0
+COMPATIBILITY=revA
+DESTINATION_DIR=/home/r-boussellaoui/poky/rpi-buildroot-submodule/sw-description_generator/destination
+OTHER_PARAM=no
+PRIVATE_KEY_PATH=/home/r-boussellaoui/poky/rpi-buildroot-submodule/swupdate/priv.pem
+REBOOT_STATE=NORMAL
+ROOTFS_ALT_DEVICE=/dev/mmcblk0p3
+ROOTFS_MAIN_DEVICE=/dev/mmcblk0p2
+ROOTFS_NAME=rootfs.ext4
+ROOTFS_VERSION=0.0.0
+SOURCE_DIR=/home/r-boussellaoui/poky/rpi-buildroot-submodule/output/images
