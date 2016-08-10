@@ -15,7 +15,8 @@ The sw-description modify also some u-boot variables.
 -------------
 
 To create an archive: 
--Launch swu-generator
--Configure the generator
--Fill in images and archive informations
--Create the archive 
+
+- Launch swu-generator
+- Configure the generator
+- Fill in images and archive informations
+- Create the archive 
