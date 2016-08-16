@@ -4,6 +4,7 @@
 FILES="sw-description sw-description.sig"
 IS_APP_MAJ="false"
 IS_ROOTFS_MAJ="false"
+MINIMAL_ROOTFS_VERSION_FILE="minimal_rootfs_version"
 
 launch_swu_creation () {
   date=$(date "+%F")
@@ -134,15 +135,16 @@ create_swu(){
     FILES="sw-description sw-description.sig"
   rm "sw-description" "sw-description.sig"
   cd - 
-  if [ $4 = "APP" ]; then create_app_archive "$DESTINATION_DIR/$archive_name" $3 $5 ; fi
+  if [ $4 = "APP" ]; then create_app_archive "$archive_name" $3 $5 ; fi
 }
 
 create_app_archive () {
-  
+  cd $DESTINATION_DIR 
   echo $CURRENT_ROOTFS_VERSION > $MINIMAL_ROOTFS_VERSION_FILE
   files="$1 $MINIMAL_ROOTFS_VERSION_FILE"
   for file in $files; do  
-    echo $file ;done | cpio -ov -H crc > "$DESTINATION_DIR/$2_APP_$3.swu"
+    echo $file ;done | cpio -ov -H crc > "$2_APP_$3.swu"
   rm $1 $MINIMAL_ROOTFS_VERSION_FILE
+  cd -
 }
 
