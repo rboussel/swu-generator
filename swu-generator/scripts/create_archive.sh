@@ -1,13 +1,16 @@
 #!/bin/bash
 # create_archive.sh - Script to create a signed .swu archive due to the sw-description file.
 
+# Variables
 FILES="sw-description sw-description.sig"
 IS_APP_MAJ="false"
 IS_ROOTFS_MAJ="false"
 MINIMAL_ROOTFS_VERSION_FILE="minimal_rootfs_version"
 FINAL_SWDESCRIPTION_FILE="$SOURCE_DIR/sw-description"
 
+# Create archives if versions or names changed
 launch_swu_creation () {
+  
   archive_creation_date=$(date "+%F")
 
   #Verif if app configs changed
@@ -16,8 +19,6 @@ launch_swu_creation () {
   else 
     IS_APP_MAJ="true"
     lauch_creation "application" $APP_NAME $APP_VERSION $APP_MAIN_DEVICE $APP_ALT_DEVICE $archive_creation_date "APP"
-    PREV_APP_NAME=$APP_NAME
-    PREV_APP_VERSION=$APP_VERSION
   fi
 
   #Verif if rootfs configs changed
@@ -26,56 +27,42 @@ launch_swu_creation () {
   else 
     IS_ROOTFS_MAJ="true"
     lauch_creation "rootfs" $ROOTFS_NAME $ROOTFS_VERSION $ROOTFS_MAIN_DEVICE $ROOTFS_ALT_DEVICE $archive_creation_date "ROOTFS"
-    PREV_ROOTFS_NAME=$ROOTFS_NAME
-    PREV_ROOTFS_VERSION=$ROOTFS_VERSION
   fi
 
   #If an archive is created, generate a version file
   if [ "$IS_APP_MAJ" == "true" -o "$IS_ROOTFS_MAJ" == "true" ]
   then
-    write_version_file; 
     show_version_file; 
+    write_version_file; 
     IS_APP_MAJ="false"; 
     IS_ROOTFS_MAJ="false";
+    PREV_APP_NAME=$APP_NAME
+    PREV_APP_VERSION=$APP_VERSION
+    PREV_ROOTFS_NAME=$ROOTFS_NAME
+    PREV_ROOTFS_VERSION=$ROOTFS_VERSION
   fi
   MENU_CHOICE="MAIN_WINDOW"
  }
 
+# Show box to add a comment in version file
 show_version_file () {
-  
-  result=$(dialog --no-lines --title 'Version file' --backtitle 'Add Comments' --editbox  $VERSION_FILE 30 90 2>&1 1>&3)
+  echo "" > $VERSION_FILE
+  result=$(dialog --no-lines --title 'Version file' --backtitle 'Add Comments' --editbox $VERSION_FILE 30 90 2>&1 1>&3)
   echo -e "$result" > $VERSION_FILE
-
 }
 
 write_version_file () {
  
-  if [ $IS_APP_MAJ = "true" ]; then 
-  echo -e " \
-  # Fichier de Mise à jour -- $(date)\n \
-  # \n \
-  # [ APPLICATION ] \n \
-  # Commentaires: \n \
-  # \n \
-  # \n \
-  # \n \
-  # \n \
-  # \n\
-  Nom: $APP_NAME Version: $APP_VERSION Version Rootfs minimale: $CURRENT_ROOTFS_VERSION \n \n " > $VERSION_FILE
+  if [ "$IS_APP_MAJ" == "true" -o "$IS_ROOTFS_MAJ" == "true"  ]; then 
+  echo -e "\n\
+=================================================================
+# Applicatif    Système minimal   Révision matérielle \n\
+-----------------------------------------------------------------
+  "$PREV_APP_VERSION"         "$PREV_ROOTFS_VERSION"          "$COMPATIBILITY" \n\
+# Nouvelle version de l'applicatif \n\
+-----------------------------------------------------------------
+  "$APP_VERSION"         "$ROOTFS_VERSION"         "$COMPATIBILITY" \n" >> $VERSION_FILE
   fi
-
-  if [ $IS_ROOTFS_MAJ = "true" ]; then 
-  echo -e " \
-  # [ ROOTFS ] \n \
-  # Commentaires: \n \
-  # \n \
-  # \n \
-  # \n \
-  # \n \
-  # \n\
-  Nom: $ROOTFS_NAME Version: $ROOTFS_VERSION \n \n" >> $VERSION_FILE
-  fi
-
 }
 
 # Make Application and Rootfs archives
@@ -85,9 +72,9 @@ lauch_creation () {
 # $2 - APP or rootfs name
 # $3 - APP or rootfs version
 # $4 - APP or rootfs main device
-# $4 - APP or rootfs alt device
-# $4 - Date
-# $4 - "APP" or "ROOTFS"
+# $5 - APP or rootfs alt device
+# $6 - Date
+# $7 - "APP" or "ROOTFS"
   
   fill_in_swdescription $1 $2 $3 $4 $5
   compute_hash 
