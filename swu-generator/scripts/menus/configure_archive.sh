@@ -18,8 +18,11 @@ archive_config () {
           case $CHOICE in 
               1)# Reboot priority
                 dialog --title "Reboot prioritaire" --backtitle "Configuration de l'archive" --yesno "Le système doit il redémarrer après la mise à jour ?" 8 60 2>&1 1>&3 
-                if [ $? = "0" ]; then REBOOT_STATE="REBOOT"; else REBOOT_STATE="NORMAL"; fi
-                IS_CONFIG_SAVED="false"
+                case $? in 
+                    "0") REBOOT_STATE="REBOOT"; IS_CONFIG_SAVED="false" ;;
+                    "1") REBOOT_STATE="NORMAL"; IS_CONFIG_SAVED="false" ;;
+                    "255") REBOOT_STATE=$PREVIOUS_REBOOT_STATE ;;
+                     esac
                 MENU_CHOICE="CONFIGURE_ARCHIVE" ;;
 
               2)# Other parameter
@@ -35,6 +38,9 @@ archive_config () {
           MENU_CHOICE="CONFIGURE_IMAGE" ;;
       
       3)# Save
+        CURRENT_APP_VERSION=$APP_VERSION
+        CURRENT_ROOTFS_VERSION=$ROOTFS_VERSION
+        PREVIOUS_REBOOT_STATE=$REBOOT_STATE
         $SAVE_ENV
         MENU_CHOICE="CONFIGURE_ARCHIVE" ;;
 

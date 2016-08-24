@@ -1,7 +1,7 @@
 #!/bin/bash
 # configure_swdescription.sh - A shell script to configure names and versions of files to include in sw-description
 
-# Get information about images
+# Get informations about images
 images_config () {
   
   # Box options
@@ -11,7 +11,7 @@ images_config () {
            4 "Version du rootfs ($ROOTFS_VERSION) --->"
            5 "Fichiers supplémentaires ($ADDED_FILES) --->"
            6 "Suite")
-
+ 
   CHOICE=$(dialog --clear \
          --extra-button \
          --extra-label "Sauvegarder" \
@@ -21,6 +21,12 @@ images_config () {
          --menu "" 20 150 100 "${OPTIONS[@]}" 2>&1 >/dev/tty)
       
   case $? in 
+  # 0) "Accepter" pressed - Show the corresponding box
+  # 1) "Précédent" pressed - Go to main window
+  # 3) "Sauvegarder" pressed - Save configs
+  # 255) Escap pressed - Go to main window
+  # *) Other - Print error message
+
       0)
           case $CHOICE in
               1)# Application name
@@ -66,6 +72,8 @@ images_config () {
         3)
           CURRENT_APP_VERSION=$APP_VERSION
           CURRENT_ROOTFS_VERSION=$ROOTFS_VERSION
+          PREVIOUS_REBOOT_STATE=$REBOOT_STATE
+
           $SAVE_ENV
           MENU_CHOICE="CONFIGURE_IMAGE" ;; 
 
