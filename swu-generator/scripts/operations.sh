@@ -6,38 +6,23 @@
 verify_input () {
   if [ "$1" ]; then eval $2="$1" ; IS_CONFIG_SAVED="false" ; fi
 }
-
 # Compare current and new value 
 compare_versions () {
  
   major_current=$(echo $1 | cut -d. -f1)
   major_new=$(echo $2 | cut -d. -f1)
-  if [ $major_new  -gt $major_current ]
-  then 
-    echo "yes"
-  elif [ $major_new  -eq $major_current ]
-  then
+  result="no"
+
+  if [ $major_new  -gt $major_current ];  then result="yes"; fi
+  if [ $major_new  -eq $major_current ];  then
     minor_current=$(echo $1 | cut -d. -f2)
     minor_new=$(echo $2 | cut -d. -f2)
-    if [ $minor_new -gt $minor_current ]
-    then 
-      echo "yes"
-    elif [ $minor_new -eq $minor_current ]
-    then 
+    if [ $minor_new -gt $minor_current ]; then result="yes"
+    elif [ $minor_new -eq $minor_current ]; then 
       revision_current=$(echo $1 | cut -d. -f3)
       revision_new=$(echo $2 | cut -d. -f3)
-      if [ $revision_new -gt $revision_current ]
-      then 
-        echo "yes"
-      else 
-        echo "no"
-      fi
-    else 
-      echo "no"
-    fi
-  else 
-    echo "no"
-  fi
+      if [ $revision_new -gt $revision_current ]; then result="yes"; fi; fi; fi 
+  echo $result
 }
 
 # Verify if the version format is right
