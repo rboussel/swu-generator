@@ -31,6 +31,7 @@ main_window () {
               esac ;;
    
       1)# Cancel
+        if [ $IS_CONFIG_SAVED = "false" ]; then $SAVE_ENV; fi
         clear
         exit 0 ;;
 
